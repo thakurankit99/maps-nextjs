@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function PUT(_request: NextRequest) {
+export async function PUT() {
   // Toggle the alarm status
   try {
     alarmStatus = {
