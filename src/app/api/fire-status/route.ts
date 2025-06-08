@@ -41,7 +41,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { isActive, sequence } = body;
 
-    const updates: any = {};
+    const updates: Partial<{ isActive: boolean; sequence: string; triggeredAt: Date | null }> = {};
 
     if (typeof isActive === 'boolean') {
       updates.isActive = isActive;
@@ -63,7 +63,7 @@ export async function POST(request: Request) {
       currentState: updatedState
     });
 
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       {
         error: 'Failed to update fire status',

@@ -63,7 +63,7 @@ export async function GET(request: NextRequest) {
           status: 'success'
         });
     }
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: 'Failed to fetch map data' },
       { status: 500 }
@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
           { status: 400 }
         );
     }
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: 'Failed to process request' },
       { status: 500 }

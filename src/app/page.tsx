@@ -2,10 +2,12 @@
 
 import { useEffect } from 'react';
 import Script from 'next/script';
-import { useHydration } from '../hooks/useHydration';
+import Link from 'next/link';
+import Image from 'next/image';
+// import { useHydration } from '../hooks/useHydration'; // Commented out as not used yet
 
 export default function Home() {
-  const isHydrated = useHydration();
+  // const isHydrated = useHydration(); // Commented out as not used yet
 
   useEffect(() => {
     // Check URL parameters and load specific view
@@ -36,7 +38,6 @@ export default function Home() {
 
     // Global state to track loading and fire emergency
     let isFireEmergencyActive = false;
-    let isManualNavigation = false;
     let loadingTimeout: NodeJS.Timeout | null = null;
 
     // Setup iframe loading handlers with careful detection
@@ -55,7 +56,6 @@ export default function Home() {
 
           setTimeout(() => {
             loadingOverlay.classList.add('hidden');
-            isManualNavigation = false; // Reset flag
             console.log('Loading animation hidden');
           }, 800); // Slightly longer delay for better UX
         };
@@ -71,7 +71,7 @@ export default function Home() {
               // If we can't access iframe content (cross-origin), wait a bit more
               setTimeout(hideLoading, 1500);
             }
-          } catch (error) {
+          } catch {
             // Cross-origin iframe, use fallback timing
             setTimeout(hideLoading, 2000);
           }
@@ -119,7 +119,6 @@ export default function Home() {
 
       const loadingOverlay = document.getElementById('mapLoadingOverlay');
       if (loadingOverlay) {
-        isManualNavigation = true;
         loadingOverlay.classList.remove('hidden');
         console.log('Loading animation shown');
       }
@@ -135,7 +134,7 @@ export default function Home() {
       console.log('O-Maps initialized');
 
       // Make safeShowLoading available globally
-      (window as any).safeShowLoading = safeShowLoading;
+      (window as Window & { safeShowLoading?: () => void }).safeShowLoading = safeShowLoading;
     };
 
     // Set a timeout to ensure all external scripts are loaded
@@ -615,12 +614,12 @@ export default function Home() {
       <div className="container-fluid sticky-top">
         <div className="container">
           <nav className="navbar navbar-expand-lg navbar-dark p-0">
-            <a href="/" className="navbar-brand">
+            <Link href="/" className="navbar-brand">
               <div>
                 <h1 className="text-white mb-0">O<span className="text-dark">-</span>MAP</h1>
                 <h6 className="text-white" style={{fontSize: '13px', margin: 0}}>Made with ❤️ by Team Vayu Sena</h6>
               </div>
-            </a>
+            </Link>
             <button type="button" className="navbar-toggler ms-auto me-0" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
               <span className="navbar-toggler-icon"></span>
             </button>
@@ -752,7 +751,7 @@ export default function Home() {
 
                       const iframe = document.getElementById('mapIframe') as HTMLIFrameElement;
                       if (iframe) {
-                        (window as any).safeShowLoading?.();
+                        (window as Window & { safeShowLoading?: () => void }).safeShowLoading?.();
                         iframe.src = 'https://app.mappedin.com/map/67af9483845fda000bf299c3';
                       }
                       const menu = document.getElementById('sideMenu');
@@ -785,7 +784,7 @@ export default function Home() {
 
                       const iframe = document.getElementById('mapIframe') as HTMLIFrameElement;
                       if (iframe) {
-                        (window as any).safeShowLoading?.();
+                        (window as Window & { safeShowLoading?: () => void }).safeShowLoading?.();
                         iframe.src = 'https://app.mappedin.com/map/67af9483845fda000bf299c3?location=s_4a807c5e25da4122&floor=m_cdd612a0032a1f74';
                       }
                       const menu = document.getElementById('sideMenu');
@@ -811,7 +810,7 @@ export default function Home() {
 
                       const iframe = document.getElementById('mapIframe') as HTMLIFrameElement;
                       if (iframe) {
-                        (window as any).safeShowLoading?.();
+                        (window as Window & { safeShowLoading?: () => void }).safeShowLoading?.();
                         iframe.src = 'https://app.mappedin.com/map/67af9483845fda000bf299c3?floor=m_d384ab208e4c026e&location=s_7697a5ba55b63506';
                       }
                       const menu = document.getElementById('sideMenu');
@@ -888,7 +887,7 @@ export default function Home() {
           <div className="row g-5 align-items-center">
             <div className="col-lg-6 wow fadeIn" data-wow-delay="0.1s">
               <div className="about-img">
-                <img className="img-fluid" src="/images/about-img.webp" alt="About O-Maps" />
+                <Image className="img-fluid" src="/images/about-img.webp" alt="About O-Maps" width={500} height={400} />
               </div>
             </div>
             <div className="col-lg-6 wow fadeIn" data-wow-delay="0.5s">
@@ -916,9 +915,9 @@ export default function Home() {
         <div className="container py-5">
           <div className="row g-5">
             <div className="col-md-6 col-lg-3 wow fadeIn" data-wow-delay="0.1s">
-              <a href="/" className="d-inline-block mb-3">
+              <Link href="/" className="d-inline-block mb-3">
                 <h1 className="text-white">O<span className="text-primary">-</span>MAP</h1>
-              </a>
+              </Link>
               <p className="mb-0">
                 OMaps is an innovative indoor navigation and virtual tour platform designed to revolutionize
                 the way users navigate and experience indoor environments. By seamlessly integrating intuitive

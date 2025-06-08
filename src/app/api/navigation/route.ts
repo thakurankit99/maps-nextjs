@@ -89,7 +89,7 @@ export async function GET(request: NextRequest) {
       emergencyRoutes: navigationData.emergencyRoutes,
       status: 'success'
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: 'Failed to fetch navigation data' },
       { status: 500 }
@@ -129,7 +129,7 @@ export async function POST(request: NextRequest) {
       message: 'Route calculated successfully',
       status: 'success'
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: 'Failed to calculate route' },
       { status: 500 }

@@ -7,6 +7,7 @@ export interface FireAlarmState {
 
 // Global state using globalThis to ensure persistence across API calls
 declare global {
+  // eslint-disable-next-line no-var
   var fireAlarmState: FireAlarmState | undefined;
 }
 

@@ -1,9 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 
 export default function TestFire() {
-  const [response, setResponse] = useState<any>(null);
+  const [response, setResponse] = useState<Record<string, unknown> | null>(null);
   const [loading, setLoading] = useState(false);
 
   const triggerFireAlarm = async () => {
@@ -12,7 +13,7 @@ export default function TestFire() {
       const res = await fetch('/api/firetrigger1');
       const data = await res.json();
       setResponse(data);
-    } catch (error) {
+    } catch {
       setResponse({ error: 'Failed to trigger fire alarm' });
     } finally {
       setLoading(false);
@@ -25,7 +26,7 @@ export default function TestFire() {
       const res = await fetch('/api/fire-status');
       const data = await res.json();
       setResponse(data);
-    } catch (error) {
+    } catch {
       setResponse({ error: 'Failed to check fire status' });
     } finally {
       setLoading(false);
@@ -47,7 +48,7 @@ export default function TestFire() {
       });
       const data = await res.json();
       setResponse(data);
-    } catch (error) {
+    } catch {
       setResponse({ error: 'Failed to reset fire alarm' });
     } finally {
       setLoading(false);
@@ -180,7 +181,7 @@ export default function TestFire() {
           </p>
         </div>
 
-        <p><a href="/" style={{ color: '#0066cc' }}>← Back to Main Page</a></p>
+        <p><Link href="/" style={{ color: '#0066cc' }}>← Back to Main Page</Link></p>
       </div>
     </div>
   );

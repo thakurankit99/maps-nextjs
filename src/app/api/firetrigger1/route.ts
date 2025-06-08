@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { triggerFireAlarm, getFireAlarmState } from '../../../lib/fireAlarmState';
+import { triggerFireAlarm } from '../../../lib/fireAlarmState';
 
 export async function GET() {
   try {

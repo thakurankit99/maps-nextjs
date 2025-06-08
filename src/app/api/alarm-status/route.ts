@@ -13,7 +13,7 @@ export async function GET() {
       lastUpdated: alarmStatus.lastUpdated,
       status: 'success'
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: 'Failed to fetch alarm status' },
       { status: 500 }
@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
       lastUpdated: alarmStatus.lastUpdated,
       status: 'updated'
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: 'Failed to update alarm status' },
       { status: 500 }
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function PUT(request: NextRequest) {
+export async function PUT(_request: NextRequest) {
   // Toggle the alarm status
   try {
     alarmStatus = {
@@ -64,7 +64,7 @@ export async function PUT(request: NextRequest) {
       lastUpdated: alarmStatus.lastUpdated,
       status: 'toggled'
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: 'Failed to toggle alarm status' },
       { status: 500 }
