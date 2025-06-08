@@ -1,0 +1,440 @@
+.portfolio-wrapper [class*="col-"] {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+.portfolio-item {
+  height: 260px;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+.google-map {
+  position: relative;
+  width: 100%;
+  padding-top: 90vh;
+}
+@media (max-width: 768px) {
+  .google-map {
+    padding-top: 177.77%;
+  }
+}
+.google-map iframe {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+.rounded {
+  border-radius: 20px !important;
+}
+.form-control,
+.form-control:focus,
+.shadow-dark {
+  -webkit-box-shadow: 0 5px 20px 0 rgba(47, 54, 64, 0.1);
+  box-shadow: 0 5px 20px 0 rgba(47, 54, 64, 0.1);
+}
+.centered {
+  width: 350px;
+  margin: 0 auto;
+}
+#logoOverlay {
+  position: absolute;
+  bottom: 2.1%;
+  left: 1%;
+  width: 18%;
+  height: 7%;
+  background-color: #fff;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  color: #000;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  font-family: Ubuntu, sans-serif;
+}
+@media (max-width: 768px) {
+  #logoOverlay {
+    bottom: 10.9%;
+    left: 0.7%;
+    width: 13%;
+    height: 7%;
+    font-size: 10px;
+    font-family: Ubuntu, sans-serif;
+  }
+}
+#logoOverlay::before {
+  content: "O-Maps";
+  display: block;
+}
+@media (max-width: 768px) {
+  #logoOverlay::before {
+    content: "O-Maps";
+  }
+}
+#Switch360 {
+  position: absolute;
+  bottom: 10%;
+  left: 1%;
+  width: 6%;
+  height: 8%;
+  background-color: #fff;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  color: #000;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  font-family: Ubuntu, sans-serif;
+}
+@media (max-width: 768px) {
+  #Switch360 {
+    bottom: 20%;
+    left: 0.7%;
+    width: 13%;
+    height: 7%;
+    font-size: 10px;
+    font-family: Ubuntu, sans-serif;
+  }
+}
+#Switch360::before {
+  content: "Switch 2D/360";
+  display: block;
+}
+@media (max-width: 768px) {
+  #Switch360::before {
+    content: "Switch 2D/360";
+  }
+}
+#SwitchSLBSGMC {
+  position: absolute;
+  bottom: 19%;
+  left: 1%;
+  width: 6%;
+  height: 8%;
+  background-color: #fff;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  color: #000;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  font-family: Ubuntu, sans-serif;
+}
+@media (max-width: 768px) {
+  #SwitchSLBSGMC {
+    bottom: 28%;
+    left: 0.7%;
+    width: 13%;
+    height: 7%;
+    font-size: 10px;
+    font-family: Ubuntu, sans-serif;
+  }
+}
+#SwitchSLBSGMC::before {
+  content: "Switch SLBSGMC";
+  display: block;
+}
+@media (max-width: 768px) {
+  #SwitchSLBSGMC::before {
+    content: "Switch SLBSGMC";
+  }
+}
+.google-map .bottomRightOverlay {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 25%;
+  height: 2.2%;
+  background-color: #f1efec;
+  z-index: 11;
+}
+@media (max-width: 768px) {
+  .google-map .bottomRightOverlay {
+    bottom: 0;
+    right: 0;
+    width: 50%;
+    height: 2.2%;
+  }
+}
+.google-map #bottomLeftOverlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0%;
+  height: 0%;
+  background-color: #f1efec;
+  z-index: 11;
+}
+@media (max-width: 768px) {
+  .google-map #bottomLeftOverlay {
+    bottom: 0;
+    left: 0.5%;
+    width: 50%;
+    height: 2.2%;
+  }
+}
+@media (max-width: 768px) {
+  #ourguide .row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  #ourguide .col-lg-7 {
+    width: 100%;
+    text-align: center;
+  }
+  #ourguide .team-item {
+    margin: 0 auto;
+  }
+}
+
+#loadingMessage {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  font-size: 1rem;
+  padding: 15px 20px;
+  border-radius: 5px;
+  z-index: 100;
+  text-align: center;
+  font-weight: bold;
+}
+
+
+#DroidOverlay {
+  position: absolute;
+  bottom: 85%;
+  left: 0;
+  width: 100%;
+  height: 18%;
+  background-color: #fff;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 30px;
+  color: #000;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  font-family: Ubuntu, sans-serif;
+}
+@media (max-width: 768px) {
+  #DroidOverlay {
+    bottom: 75%;
+    left: 0;
+    width: 100%;
+    height: 26%;
+    font-size: 19px;
+    font-family: Ubuntu, sans-serif;
+  }
+}
+#DroidOverlay::before {
+  content: "O-Maps Live Street View";
+  display: block;
+}
+@media (max-width: 768px) {
+  #DroidOverlay::before {
+    content: "O-Maps Live Street View";
+  }
+}
+.input-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 20px;
+}
+.input-container label {
+  margin-bottom: 5px;
+}
+.input-container button,
+.input-container input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+.input-container input {
+  width: 200px;
+}
+.input-container button {
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+.input-container button:hover {
+  background-color: #0056b3;
+}
+@media (max-width: 768px) {
+  .input-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .input-container button,
+  .input-container input,
+  .input-container label {
+    margin-bottom: 10px;
+  }
+  .input-container input {
+    width: 100%;
+  }
+}
+.loading-bar {
+  display: none;
+  width: 100%;
+  height: 4px;
+  background: #ccc;
+  margin-top: 10px;
+}
+.loading-bar div {
+  height: 100%;
+  width: 0;
+  background: #007bff;
+  animation: loading 2s infinite;
+}
+@keyframes loading {
+  0% {
+    width: 0;
+  }
+  50% {
+    width: 100%;
+  }
+  100% {
+    width: 0;
+  }
+}
+#iframeOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+#iframeOverlay.active {
+  display: flex;
+}
+
+
+
+.topOverlay {
+  position: absolute;
+  bottom: 90.7%; 
+  right: 1%;  
+  width: 8%;  
+  height: 7%;
+  background-color: #ffffff; /* Light gray background */
+  z-index: 10;    
+  display: flex;             
+  justify-content: center;   
+  align-items: center;      
+  font-size: 14px;          
+  color: black;
+  border: 1px solid #ddd;   /* Add a subtle border */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  border-radius: 4px;       /* Slightly rounded corners */
+  font-family: "Ubuntu", sans-serif;
+}
+
+@media (max-width: 768px) { 
+  .topOverlay {
+      bottom: 82.4%;          /* Same as the overlay's bottom (mobile) */
+      right: 2.5%;           /* Same as the overlay's left (mobile) */
+      width: 13.5%;           /* Match the width of the overlay (mobile) */
+      height: 7.5%;          /* Increase the height of the box / / Maintain the square shape */
+      font-size: 9px;       /* Decrease font size to fit */
+      font-family: "Ubuntu", sans-serif;
+  }
+}
+
+.topOverlay::before {  /* Add this pseudo-element */
+  content: "Team Vayu Sena"; 
+  display: block;         /* Make it occupy space */
+}
+
+@media (max-width: 768px) { 
+  .topOverlay::before {
+      content: "Team Vayu Sena";  /* Change the content for mobile */
+  }
+}
+
+
+#topOverlay2 {
+  position: absolute;
+  bottom: 90.7%; 
+  right: 1%;  
+  width: 8%;  
+  height: 7%;
+  background-color: #ffffff; /* Light gray background */
+  z-index: 9;    
+  display: flex;             
+  justify-content: center;   
+  align-items: center;      
+  font-size: 14px;          
+  color: black;
+  border: 1px solid #ddd;   /* Add a subtle border */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  border-radius: 4px;       /* Slightly rounded corners */
+  font-family: "Ubuntu", sans-serif;
+}
+
+@media (max-width: 768px) { 
+  #topOverlay2 {
+      bottom: 2.8%;          /* Same as the overlay's bottom (mobile) */
+      right: 2.5%;           /* Same as the overlay's left (mobile) */
+      width: 12%;           /* Match the width of the overlay (mobile) */
+      height: 7%;          /* Increase the height of the box / / Maintain the square shape */
+      font-size: 9px;       /* Decrease font size to fit */
+      font-family: "Ubuntu", sans-serif;
+      background-color: #1890ff;
+      z-index: 10;
+      color: #fff;
+  }
+}
+
+@media (max-width: 768px) { 
+  #topOverlay2::before {
+      content: "Switch Floors";  /* Change the content for mobile */
+  }
+}
+
+.loading-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.2rem;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 10px 20px;
+  border-radius: 8px;
+  text-align: center;
+  z-index: 1000;
+}
+
+@media (max-width: 768px) {
+  .loading-message {
+      font-size: 1rem;
+      padding: 8px 16px;
+  }
+}

@@ -1,26 +1,249 @@
-@import "tailwindcss";
+/* Global styles for O-Maps Next.js application */
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Reset some default styles to work better with Bootstrap */
+* {
+  box-sizing: border-box;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Ensure the body uses the fonts from the original design */
+body {
+  font-family: 'Open Sans', 'Ubuntu', Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Ensure images are responsive */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Global styles for O-Maps Next.js application */
+/* Note: Most styles are in /css/style.css and /css/style1.css */
+
+/* Ensure images are responsive */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Debug: Force fire alert visibility for testing */
+#fireAlert {
+  min-height: 20px;
+  border: 2px dashed rgba(255, 0, 0, 0.3);
+}
+
+#fireAlert.show {
+  border: 2px solid #ff4757 !important;
+}
+
+/* Modern Fire Alert Styling - Integrated above iframe */
+#fireAlert {
+  position: relative;
+  width: 100%;
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, #ff4757 0%, #ff3838 100%);
+  color: white;
+  padding: 16px 24px;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(255, 71, 87, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  font-family: 'Ubuntu', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  text-align: center;
+  animation: fireAlertSlideDown 0.5s ease-out, fireAlertPulse 2s infinite;
+  display: none;
+  overflow: hidden;
+}
+
+#fireAlert.show {
+  display: block;
+  animation: fireAlertSlideDown 0.5s ease-out forwards, fireAlertPulse 2s infinite 0.5s;
+}
+
+#fireAlert.hide {
+  animation: fireAlertSlideUp 0.3s ease-in forwards;
+}
+
+@keyframes fireAlertSlideUp {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+    max-height: 200px;
+    margin-bottom: 20px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-100%);
+    max-height: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Fire alert icon */
+#fireAlert::before {
+  content: '🚨';
+  font-size: 24px;
+  margin-right: 12px;
+  animation: fireAlertIconSpin 1s linear infinite;
+}
+
+/* Fire alert animations */
+@keyframes fireAlertSlideDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-100%);
+    max-height: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    max-height: 200px;
+    margin-bottom: 20px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+}
+
+@keyframes fireAlertPulse {
+  0%, 100% {
+    box-shadow: 0 8px 32px rgba(255, 71, 87, 0.4);
+  }
+  50% {
+    box-shadow: 0 8px 32px rgba(255, 71, 87, 0.8);
+  }
+}
+
+@keyframes fireAlertIconSpin {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(-10deg); }
+  75% { transform: rotate(10deg); }
+  100% { transform: rotate(0deg); }
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  #fireAlert {
+    margin-bottom: 15px;
+    font-size: 14px;
+    padding: 12px 16px;
+    border-radius: 8px;
+  }
+}
+
+
+
+/* Fire alert content */
+#fireAlert .alert-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+#fireAlert .alert-text {
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+#fireAlert .alert-subtext {
+  font-size: 12px;
+  opacity: 0.9;
+  margin-top: 4px;
+  font-weight: 400;
+}
+
+/* Fire alert progress bar */
+#fireAlert .progress-container {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+  margin-top: 12px;
+  overflow: hidden;
+}
+
+#fireAlert .progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #fff 0%, #ffeb3b 100%);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+/* Fire alert status indicator */
+#fireAlert .status-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+#fireAlert .status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4caf50;
+  animation: statusDotPulse 1.5s infinite;
+}
+
+@keyframes statusDotPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.2);
+  }
+}
+
+/* Enhanced fire alert for different sequences */
+#fireAlert.exit1 {
+  background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+}
+
+#fireAlert.exit2 {
+  background: linear-gradient(135deg, #ff9500 0%, #ffad00 100%);
+}
+
+#fireAlert.normal {
+  background: linear-gradient(135deg, #4caf50 0%, #8bc34a 100%);
+}
+
+/* Sound wave animation for emergency */
+#fireAlert .sound-waves {
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 16px;
+  animation: soundWave 2s infinite;
+  pointer-events: none;
+}
+
+@keyframes soundWave {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.1);
+    opacity: 0;
+  }
 }
