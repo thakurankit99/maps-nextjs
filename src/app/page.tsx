@@ -6,6 +6,17 @@ import Link from 'next/link';
 import Image from 'next/image';
 // import { useHydration } from '../hooks/useHydration'; // Commented out as not used yet
 
+// Declare global window functions for audio management
+declare global {
+  interface Window {
+    toggleFireAlarmAudio?: () => boolean;
+    startFireAlarmAudio?: () => void;
+    stopFireAlarmAudio?: () => void;
+    isFireAlarmAudioPlaying?: () => boolean;
+    safeShowLoading?: () => void;
+  }
+}
+
 export default function Home() {
   // const isHydrated = useHydration(); // Commented out as not used yet
 
