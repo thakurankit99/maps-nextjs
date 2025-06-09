@@ -6,6 +6,14 @@ import Link from 'next/link';
 import Image from 'next/image';
 // import { useHydration } from '../hooks/useHydration'; // Commented out as not used yet
 
+// Type definitions for window extensions
+declare global {
+  interface Window {
+    safeShowLoading?: () => void;
+    checkFireAlarm?: () => void;
+  }
+}
+
 export default function Home() {
   // const isHydrated = useHydration(); // Commented out as not used yet
 
@@ -787,8 +795,8 @@ export default function Home() {
                         if (data.success) {
                           console.log('Fire alarm successfully stopped');
                           // Trigger immediate status check
-                          if (typeof window !== 'undefined' && (window as any).checkFireAlarm) {
-                            (window as any).checkFireAlarm();
+                          if (typeof window !== 'undefined' && window.checkFireAlarm) {
+                            window.checkFireAlarm();
                           }
                         } else {
                           // If API failed, restore the alert

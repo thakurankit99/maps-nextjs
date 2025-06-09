@@ -1,0 +1,21 @@
+/* External CSS placeholder for O-Maps */
+/* This file contains fallback styles and compatibility fixes */
+
+/* Note: External CSS files are loaded via link tags in layout.tsx */
+/* This approach is used because Next.js has limitations with @import from public folder */
+
+/* Additional styles to ensure compatibility */
+body {
+  font-family: 'Open Sans', 'Ubuntu', Arial, Helvetica, sans-serif;
+}
+
+/* Ensure proper box-sizing */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Responsive images */
+img {
+  max-width: 100%;
+  height: auto;
+}
