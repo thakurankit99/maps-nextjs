@@ -3,6 +3,7 @@ export interface FireAlarmState {
   isActive: boolean;
   triggeredAt: Date | null;
   sequence: 'normal' | 'exit1' | 'exit2';
+  manualStop: boolean; // Track if manually stopped
 }
 
 // Global state using globalThis to ensure persistence across API calls
@@ -16,7 +17,8 @@ if (!globalThis.fireAlarmState) {
   globalThis.fireAlarmState = {
     isActive: false,
     triggeredAt: null,
-    sequence: 'normal'
+    sequence: 'normal',
+    manualStop: false
   };
 }
 
@@ -30,27 +32,24 @@ export const mapUrls = {
 export function getFireAlarmState(): FireAlarmState {
   const state = globalThis.fireAlarmState!;
 
-  // If fire alarm is active, calculate current sequence based on elapsed time
-  if (state.isActive && state.triggeredAt) {
+  // If fire alarm is active and not manually stopped, calculate current sequence based on elapsed time
+  if (state.isActive && state.triggeredAt && !state.manualStop) {
     const elapsed = Date.now() - new Date(state.triggeredAt).getTime();
 
-    if (elapsed >= 20000) {
-      // After 20 seconds, reset to normal
-      globalThis.fireAlarmState = {
-        isActive: false,
-        triggeredAt: null,
-        sequence: 'normal'
-      };
-      console.log('Fire alarm auto-reset to normal after 20 seconds');
-      return { ...globalThis.fireAlarmState };
-    } else if (elapsed >= 10000) {
-      // After 10 seconds, switch to exit2
+    if (elapsed >= 30000) {
+      // After 30 seconds (20s exit1 + 10s exit2), stay on exit2 until manually stopped
+      if (state.sequence !== 'exit2') {
+        globalThis.fireAlarmState.sequence = 'exit2';
+        console.log('Fire alarm sequence updated to exit2 - staying until manual stop');
+      }
+    } else if (elapsed >= 20000) {
+      // After 20 seconds, switch to exit2 for 10 seconds
       if (state.sequence !== 'exit2') {
         globalThis.fireAlarmState.sequence = 'exit2';
         console.log('Fire alarm sequence auto-updated to exit2');
       }
     }
-    // First 10 seconds remain as exit1
+    // First 20 seconds remain as exit1
   }
 
   return { ...globalThis.fireAlarmState };
@@ -66,7 +65,8 @@ export function triggerFireAlarm(): FireAlarmState {
   globalThis.fireAlarmState = {
     isActive: true,
     triggeredAt: new Date(),
-    sequence: 'exit1'
+    sequence: 'exit1',
+    manualStop: false // Reset manual stop flag
   };
 
   console.log('Fire alarm triggered:', globalThis.fireAlarmState);
@@ -77,11 +77,25 @@ export function triggerFireAlarm(): FireAlarmState {
   return { ...globalThis.fireAlarmState };
 }
 
+export function stopFireAlarm(): FireAlarmState {
+  // Manually stop the fire alarm
+  globalThis.fireAlarmState = {
+    isActive: false,
+    triggeredAt: null,
+    sequence: 'normal',
+    manualStop: true
+  };
+
+  console.log('Fire alarm manually stopped:', globalThis.fireAlarmState);
+  return { ...globalThis.fireAlarmState };
+}
+
 export function resetFireAlarm(): FireAlarmState {
   globalThis.fireAlarmState = {
     isActive: false,
     triggeredAt: null,
-    sequence: 'normal'
+    sequence: 'normal',
+    manualStop: false
   };
   return { ...globalThis.fireAlarmState };
 }

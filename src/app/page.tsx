@@ -570,6 +570,80 @@ export default function Home() {
           transform: none;
         }
 
+        /* 📌 Fire Stop Button Styles */
+        .fire-stop-button-container {
+          display: flex;
+          justify-content: center;
+          margin-top: 20px;
+          padding: 0 20px;
+        }
+
+        .fire-stop-button {
+          background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+          color: white;
+          border: none;
+          border-radius: 12px;
+          padding: 12px 24px;
+          font-size: 16px;
+          font-weight: 600;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          position: relative;
+          overflow: hidden;
+          z-index: 1020;
+        }
+
+        .fire-stop-button:hover {
+          background: linear-gradient(135deg, #c82333 0%, #a71e2a 100%);
+          transform: translateY(-2px);
+          box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+        }
+
+        .fire-stop-button:active {
+          transform: translateY(0);
+          box-shadow: 0 2px 10px rgba(220, 53, 69, 0.3);
+        }
+
+        .fire-stop-button.stopping {
+          background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+          cursor: not-allowed;
+          opacity: 0.8;
+        }
+
+        .fire-stop-button.stopping:hover {
+          background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+          transform: none;
+        }
+
+        .fire-stop-button i {
+          font-size: 18px;
+          animation: pulse 2s infinite;
+        }
+
+        .fire-stop-button.stopping i {
+          animation: spin 1s linear infinite;
+        }
+
+        @keyframes pulse {
+          0%, 100% {
+            transform: scale(1);
+          }
+          50% {
+            transform: scale(1.1);
+          }
+        }
+
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+
         /* 📌 Mobile Responsive Styles */
         @media (max-width: 768px) {
           /* Custom Logo - Mobile - Exact replica from map-api & Indira-market-building */
@@ -599,6 +673,16 @@ export default function Home() {
             width: 35px;
             height: 35px;
             font-size: 12px;
+          }
+
+          /* Fire Stop Button - Mobile */
+          .fire-stop-button {
+            padding: 10px 20px;
+            font-size: 14px;
+          }
+
+          .fire-stop-button i {
+            font-size: 16px;
           }
         }
       `}</style>
@@ -658,6 +742,85 @@ export default function Home() {
                 <div className="status-indicator">
                   <div className="status-dot"></div>
                   <span className="status-text">Initializing emergency protocol...</span>
+                </div>
+                {/* Stop Fire Alarm Button */}
+                <div className="fire-stop-button-container">
+                  <button
+                    id="stopFireAlarmBtn"
+                    className="fire-stop-button"
+                    onClick={(e) => {
+                      const button = e.currentTarget;
+
+                      // Add visual feedback - button becomes disabled and shows spinner
+                      button.classList.add('stopping');
+                      button.disabled = true;
+                      const buttonText = button.querySelector('span');
+                      const originalText = buttonText?.textContent;
+                      if (buttonText) buttonText.textContent = 'STOPPING...';
+
+                      // Immediate UI feedback - hide the alert optimistically
+                      const fireAlert = document.getElementById('fireAlert');
+                      if (fireAlert) {
+                        fireAlert.classList.remove('show');
+                        fireAlert.classList.add('hide');
+                        setTimeout(() => {
+                          fireAlert.style.display = 'none';
+                        }, 300);
+                      }
+
+                      // Reset map to default immediately
+                      const mapIframe = document.getElementById('mapIframe') as HTMLIFrameElement;
+                      if (mapIframe) {
+                        mapIframe.src = 'https://app.mappedin.com/map/67af9483845fda000bf299c3';
+                      }
+
+                      // Call the stop fire alarm API
+                      fetch('/api/stop-fire-alarm', {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json',
+                        },
+                      })
+                      .then(response => response.json())
+                      .then(data => {
+                        console.log('Fire alarm stopped:', data);
+                        if (data.success) {
+                          console.log('Fire alarm successfully stopped');
+                          // Trigger immediate status check
+                          if (typeof window !== 'undefined' && (window as any).checkFireAlarm) {
+                            (window as any).checkFireAlarm();
+                          }
+                        } else {
+                          // If API failed, restore the alert
+                          if (fireAlert) {
+                            fireAlert.style.display = 'block';
+                            fireAlert.classList.remove('hide');
+                            fireAlert.classList.add('show');
+                          }
+                        }
+                      })
+                      .catch(error => {
+                        console.error('Error stopping fire alarm:', error);
+                        // If API failed, restore the alert
+                        if (fireAlert) {
+                          fireAlert.style.display = 'block';
+                          fireAlert.classList.remove('hide');
+                          fireAlert.classList.add('show');
+                        }
+                      })
+                      .finally(() => {
+                        // Reset button state
+                        button.classList.remove('stopping');
+                        button.disabled = false;
+                        if (buttonText && originalText) {
+                          buttonText.textContent = originalText;
+                        }
+                      });
+                    }}
+                  >
+                    <i className="fas fa-stop" aria-hidden="true"></i>
+                    <span>STOP ALARM</span>
+                  </button>
                 </div>
               </div>
             </div>

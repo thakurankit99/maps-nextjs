@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { triggerFireAlarm } from '../../../lib/fireAlarmState';
+import { sendFireEmergencyAlert, checkTwilioConfig } from '../../../lib/twilioService';
 
 export async function GET() {
   try {
@@ -7,10 +8,23 @@ export async function GET() {
     console.log('🔥 Environment:', process.env.NODE_ENV);
     console.log('🔥 Platform:', process.env.VERCEL ? 'Vercel' : 'Local');
 
+    // Check Twilio configuration
+    const twilioConfig = checkTwilioConfig();
+    console.log('📱 Twilio configuration:', twilioConfig);
+
     // Trigger the fire alarm sequence
     const fireState = triggerFireAlarm();
-
     console.log('🔥 Fire alarm triggered, new state:', fireState);
+
+    // Send emergency SMS alert
+    let smsResult = null;
+    if (twilioConfig.configured) {
+      console.log('📱 Sending emergency SMS alert...');
+      smsResult = await sendFireEmergencyAlert();
+      console.log('📱 SMS result:', smsResult);
+    } else {
+      console.log('⚠️ Twilio not configured, skipping SMS alert. Missing:', twilioConfig.missing);
+    }
 
     return NextResponse.json({
       success: true,
@@ -25,6 +39,16 @@ export async function GET() {
         step3: 'Return to normal (after 20 seconds total)'
       },
       fireState: fireState,
+      smsAlert: smsResult ? {
+        sent: smsResult.success,
+        messageSid: smsResult.messageSid,
+        error: smsResult.error,
+        timestamp: smsResult.timestamp
+      } : {
+        sent: false,
+        error: 'Twilio not configured',
+        missingConfig: twilioConfig.missing
+      },
       environment: {
         nodeEnv: process.env.NODE_ENV,
         isVercel: !!process.env.VERCEL,
@@ -33,7 +57,8 @@ export async function GET() {
       debug: {
         globalStateExists: !!globalThis.fireAlarmState,
         rawState: globalThis.fireAlarmState,
-        serverlessNote: 'Sequence timing handled by client-side polling'
+        serverlessNote: 'Sequence timing handled by client-side polling',
+        twilioConfigured: twilioConfig.configured
       }
     });
 

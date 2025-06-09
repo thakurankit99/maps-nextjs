@@ -33,6 +33,31 @@ export default function TestFire() {
     }
   };
 
+  const stopFireAlarm = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch('/api/stop-fire-alarm', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await res.json();
+      setResponse(data);
+
+      // Trigger immediate status check if available
+      if (typeof window !== 'undefined' && (window as any).checkFireAlarm) {
+        setTimeout(() => {
+          (window as any).checkFireAlarm();
+        }, 100);
+      }
+    } catch {
+      setResponse({ error: 'Failed to stop fire alarm' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const resetFireAlarm = async () => {
     setLoading(true);
     try {
@@ -77,7 +102,7 @@ export default function TestFire() {
           {loading ? 'Loading...' : 'Trigger Fire Alarm'}
         </button>
 
-        <button 
+        <button
           onClick={checkFireStatus}
           disabled={loading}
           style={{
@@ -93,7 +118,23 @@ export default function TestFire() {
           {loading ? 'Loading...' : 'Check Fire Status'}
         </button>
 
-        <button 
+        <button
+          onClick={stopFireAlarm}
+          disabled={loading}
+          style={{
+            padding: '10px 20px',
+            marginRight: '10px',
+            backgroundColor: '#dc3545',
+            color: 'white',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: loading ? 'not-allowed' : 'pointer'
+          }}
+        >
+          {loading ? 'Loading...' : 'Stop Fire Alarm'}
+        </button>
+
+        <button
           onClick={resetFireAlarm}
           disabled={loading}
           style={{
@@ -129,6 +170,7 @@ export default function TestFire() {
         <ol>
           <li><strong>Trigger Fire Alarm:</strong> Calls <code>/api/firetrigger1</code> to start the fire alarm sequence</li>
           <li><strong>Check Fire Status:</strong> Calls <code>/api/fire-status</code> to see current fire alarm state</li>
+          <li><strong>Stop Fire Alarm:</strong> Calls <code>/api/stop-fire-alarm</code> to manually stop the active fire alarm</li>
           <li><strong>Reset Fire Alarm:</strong> Manually resets the fire alarm to normal state</li>
         </ol>
         

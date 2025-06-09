@@ -254,6 +254,13 @@ function checkFireAlarm() {
         console.log('Fire status received:', fireStatus);
         console.log('Current state - fireActive:', fireActive, 'currentFireSequence:', currentFireSequence);
 
+        // Adjust polling rate based on fire status
+        const newPollingRate = fireStatus.isActive ? 1000 : 5000; // 1 second when active, 5 seconds when normal
+        if (newPollingRate !== currentPollingRate) {
+          console.log(`Adjusting polling rate to ${newPollingRate}ms`);
+          startPolling(newPollingRate);
+        }
+
         // Check if fire status has changed
         if (fireStatus.isActive !== fireActive || fireStatus.sequence !== currentFireSequence) {
             console.log('Fire status changed, updating alert');
@@ -268,9 +275,33 @@ function checkFireAlarm() {
       });
 }
 
+// Dynamic polling interval - faster when fire alarm is active
+let pollingInterval = null;
+let currentPollingRate = 5000; // Default 5 seconds
+
+function startPolling(rate = 5000) {
+  if (pollingInterval) {
+    clearInterval(pollingInterval);
+  }
+  currentPollingRate = rate;
+  pollingInterval = setInterval(checkFireAlarm, rate);
+  console.log(`Fire alarm polling started at ${rate}ms intervals`);
+}
+
+function stopPolling() {
+  if (pollingInterval) {
+    clearInterval(pollingInterval);
+    pollingInterval = null;
+    console.log('Fire alarm polling stopped');
+  }
+}
+
+// Make checkFireAlarm globally accessible for immediate calls
+window.checkFireAlarm = checkFireAlarm;
+
 // Wait a bit before starting the interval to ensure the page is fully loaded
 setTimeout(() => {
-  setInterval(checkFireAlarm, 5000);
+  startPolling(5000); // Start with normal rate
   checkFireAlarm(); // Initial check
 }, 2000);
 
