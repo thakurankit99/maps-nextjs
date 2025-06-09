@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fire Alarm Audio Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .alert {
+            background: #ff4757;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .info {
+            background: #3742fa;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+        }
+        button:hover {
+            background: #20c997;
+        }
+        .code {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔊 Fire Alarm Audio Test</h1>
+        
+        <div class="alert">
+            <strong>⚠️ Missing Audio File</strong><br>
+            The system is looking for: <code>/audio/alert_audio.mp3</code>
+        </div>
+
+        <div class="info">
+            <strong>📋 Audio Requirements</strong><br>
+            • File: alert_audio.mp3<br>
+            • Duration: 18 seconds<br>
+            • Format: MP3<br>
+            • Location: /public/audio/
+        </div>
+
+        <h2>🧪 Test Audio System</h2>
+        <p>Use these buttons to test the audio functionality:</p>
+
+        <button onclick="testWebAudio()">🔊 Test Web Audio (Beep)</button>
+        <button onclick="testAudioFile()">🎵 Test Audio File</button>
+        <button onclick="simulateFireAlarm()">🚨 Simulate Fire Alarm</button>
+
+        <div id="status" style="margin-top: 20px; padding: 15px; background: #e9ecef; border-radius: 8px;"></div>
+
+        <h2>📝 How to Add Audio File</h2>
+        <div class="code">
+1. Create or obtain an 18-second MP3 audio file
+2. Name it: alert_audio.mp3
+3. Place it in: ompas-nextjs/public/audio/
+4. Refresh the page and test
+        </div>
+
+        <h2>🔧 Audio System Features</h2>
+        <ul>
+            <li>✅ Manual trigger only (no autoplay)</li>
+            <li>✅ 18-second duration with 0.5s gap between repeats</li>
+            <li>✅ Toggle button in fire alert UI</li>
+            <li>✅ Browser autoplay policy handling</li>
+            <li>✅ Mobile responsive controls</li>
+            <li>✅ Accessibility features</li>
+        </ul>
+    </div>
+
+    <script>
+        function updateStatus(message, type = 'info') {
+            const status = document.getElementById('status');
+            const colors = {
+                info: '#3742fa',
+                success: '#28a745',
+                error: '#ff4757',
+                warning: '#ffa502'
+            };
+            status.style.background = colors[type] || colors.info;
+            status.style.color = 'white';
+            status.innerHTML = message;
+        }
+
+        function testWebAudio() {
+            updateStatus('🔊 Testing Web Audio API...', 'info');
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+
+                oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                oscillator.type = 'sine';
+
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1);
+
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 1);
+
+                updateStatus('✅ Web Audio API working! You should hear a beep.', 'success');
+            } catch (error) {
+                updateStatus('❌ Web Audio API error: ' + error.message, 'error');
+            }
+        }
+
+        function testAudioFile() {
+            updateStatus('🎵 Testing audio file...', 'info');
+            const audio = new Audio('/audio/alert_audio.mp3');
+            
+            audio.addEventListener('canplaythrough', () => {
+                updateStatus('✅ Audio file loaded successfully!', 'success');
+            });
+            
+            audio.addEventListener('error', (e) => {
+                updateStatus('❌ Audio file not found or cannot be loaded. Please add alert_audio.mp3 to /public/audio/', 'error');
+            });
+            
+            audio.play().then(() => {
+                updateStatus('✅ Audio file playing...', 'success');
+            }).catch(error => {
+                if (error.name === 'NotAllowedError') {
+                    updateStatus('⚠️ Browser blocked autoplay. Click this button again to play.', 'warning');
+                } else {
+                    updateStatus('❌ Cannot play audio: ' + error.message, 'error');
+                }
+            });
+        }
+
+        function simulateFireAlarm() {
+            updateStatus('🚨 Simulating fire alarm sequence...', 'warning');
+            
+            // Simulate the fire alarm audio behavior
+            let playCount = 0;
+            const maxPlays = 3; // Play 3 times for demo
+            
+            function playAlarmCycle() {
+                if (playCount >= maxPlays) {
+                    updateStatus('✅ Fire alarm simulation complete. In real scenario, this would continue until manually stopped.', 'success');
+                    return;
+                }
+                
+                playCount++;
+                updateStatus(`🚨 Fire alarm cycle ${playCount}/${maxPlays} - Playing 18-second alert...`, 'warning');
+                
+                // Simulate 18-second duration
+                setTimeout(() => {
+                    updateStatus(`⏸️ Cycle ${playCount} complete. Waiting 0.5 seconds before next cycle...`, 'info');
+                    setTimeout(playAlarmCycle, 500); // 0.5 second gap
+                }, 2000); // Shortened to 2 seconds for demo (real: 18 seconds)
+            }
+            
+            playAlarmCycle();
+        }
+
+        // Initialize
+        updateStatus('🔧 Audio test page loaded. Click buttons above to test functionality.', 'info');
+    </script>
+</body>
+</html>

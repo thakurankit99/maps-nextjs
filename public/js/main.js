@@ -79,46 +79,153 @@ let fireActive = false;
 let currentFireSequence = 'normal';
 let alertSoundPlayed = false;
 
-// Function to play alert sound
-function playAlertSound() {
-    try {
-        // Create a simple beep sound using Web Audio API
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
+// Global audio management variables
+let fireAlarmAudio = null;
+let audioPlaybackInterval = null;
+let isAudioPlaying = false;
 
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
+// Function to initialize fire alarm audio
+function initializeFireAlarmAudio() {
+    if (!fireAlarmAudio) {
+        fireAlarmAudio = new Audio('/audio/alert_audio.mp3');
+        fireAlarmAudio.preload = 'auto';
+        fireAlarmAudio.volume = 0.8; // Set volume to 80%
 
-        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-        oscillator.type = 'sine';
+        // Add event listeners for audio management
+        fireAlarmAudio.addEventListener('ended', handleAudioEnded);
+        fireAlarmAudio.addEventListener('error', handleAudioError);
+        fireAlarmAudio.addEventListener('canplaythrough', () => {
+            console.log('🔊 Fire alarm audio loaded and ready to play');
+        });
 
-        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+        console.log('🔊 Fire alarm audio initialized');
+    }
+    return fireAlarmAudio;
+}
 
-        oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 0.5);
+// Function to handle audio ended event (18 seconds completed)
+function handleAudioEnded() {
+    console.log('🔊 Fire alarm audio completed (18 seconds), checking if should repeat...');
 
-        // Play a second beep
+    // Check if fire alarm is still active before repeating
+    if (fireActive && isAudioPlaying) {
+        console.log('🔊 Fire alarm still active, restarting audio...');
+        // Small delay before restarting to avoid audio overlap
         setTimeout(() => {
-            const oscillator2 = audioContext.createOscillator();
-            const gainNode2 = audioContext.createGain();
+            if (fireActive && isAudioPlaying && fireAlarmAudio) {
+                fireAlarmAudio.currentTime = 0; // Reset to beginning
+                fireAlarmAudio.play().catch(error => {
+                    console.error('🔊 Error restarting fire alarm audio:', error);
+                });
+            }
+        }, 500); // 0.5 second gap between repetitions
+    } else {
+        console.log('🔊 Fire alarm stopped or audio disabled, not repeating');
+        isAudioPlaying = false;
+    }
+}
 
-            oscillator2.connect(gainNode2);
-            gainNode2.connect(audioContext.destination);
+// Function to handle audio errors
+function handleAudioError(error) {
+    console.error('🔊 Fire alarm audio error:', error);
+    console.error('🔊 Audio file may be missing: /audio/alert_audio.mp3');
+    isAudioPlaying = false;
+}
 
-            oscillator2.frequency.setValueAtTime(1000, audioContext.currentTime);
-            oscillator2.type = 'sine';
+// Function to start fire alarm audio (manual trigger only)
+function startFireAlarmAudio() {
+    console.log('🔊 Manual start of fire alarm audio requested...');
 
-            gainNode2.gain.setValueAtTime(0.3, audioContext.currentTime);
-            gainNode2.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+    const audio = initializeFireAlarmAudio();
 
-            oscillator2.start(audioContext.currentTime);
-            oscillator2.stop(audioContext.currentTime + 0.5);
-        }, 600);
+    if (audio && !isAudioPlaying) {
+        isAudioPlaying = true;
+        audio.currentTime = 0; // Start from beginning
 
-    } catch (error) {
-        console.log('Audio not supported or blocked');
+        // Play the audio with proper error handling for autoplay policy
+        audio.play().then(() => {
+            console.log('🔊 Fire alarm audio started successfully');
+            // Update UI to show audio is playing
+            updateAudioButtonState(true);
+        }).catch(error => {
+            console.error('🔊 Error starting fire alarm audio:', error);
+            if (error.name === 'NotAllowedError') {
+                console.log('🔊 Browser autoplay policy prevented audio. User must click the audio button first.');
+                alert('Please click the audio button to enable fire alarm sounds. Browser requires user interaction for audio playback.');
+            } else {
+                console.error('🔊 Audio file may be missing: /audio/alert_audio.mp3');
+            }
+            isAudioPlaying = false;
+            updateAudioButtonState(false);
+        });
+    } else if (isAudioPlaying) {
+        console.log('🔊 Fire alarm audio already playing');
+    }
+}
+
+// Function to stop fire alarm audio
+function stopFireAlarmAudio() {
+    console.log('🔊 Stopping fire alarm audio...');
+
+    isAudioPlaying = false;
+
+    if (fireAlarmAudio) {
+        fireAlarmAudio.pause();
+        fireAlarmAudio.currentTime = 0; // Reset to beginning
+        console.log('🔊 Fire alarm audio stopped');
+    }
+
+    // Clear any pending audio intervals
+    if (audioPlaybackInterval) {
+        clearInterval(audioPlaybackInterval);
+        audioPlaybackInterval = null;
+    }
+
+    // Update button state
+    updateAudioButtonState(false);
+}
+
+// Function to update audio button state
+function updateAudioButtonState(playing) {
+    const button = document.getElementById('toggleAudioBtn');
+    if (button) {
+        const icon = button.querySelector('i');
+        const text = button.querySelector('span');
+
+        if (icon && text) {
+            if (playing) {
+                icon.className = 'fas fa-volume-up';
+                text.textContent = 'AUDIO ON';
+                button.setAttribute('aria-label', 'Turn off fire alarm audio');
+                button.style.background = 'linear-gradient(135deg, #28a745 0%, #20c997 100%)';
+            } else {
+                icon.className = 'fas fa-volume-mute';
+                text.textContent = 'AUDIO OFF';
+                button.setAttribute('aria-label', 'Turn on fire alarm audio');
+                button.style.background = 'linear-gradient(135deg, #6c757d 0%, #495057 100%)';
+            }
+        }
+    }
+}
+
+// Function to toggle fire alarm audio (manual only)
+function toggleFireAlarmAudio() {
+    console.log('🔊 Audio toggle requested, current state:', isAudioPlaying);
+
+    if (isAudioPlaying) {
+        stopFireAlarmAudio();
+        updateAudioButtonState(false);
+        return false; // Audio stopped
+    } else {
+        // Only start if fire alarm is active
+        if (fireActive) {
+            startFireAlarmAudio();
+            return isAudioPlaying; // Return actual state after attempt
+        } else {
+            console.log('🔊 Cannot start audio - no active fire alarm');
+            alert('Audio can only be played during an active fire alarm.');
+            return false;
+        }
     }
 }
 
@@ -143,9 +250,9 @@ function updateFireAlert(fireStatus) {
 
     // Update fire alert display with modern UI
     if (fireStatus.isActive && fireStatus.showAlert) {
-        // Play alert sound only once when fire is first detected
+        // Manual audio trigger only - no automatic playback
         if (!alertSoundPlayed && !fireActive) {
-            playAlertSound();
+            console.log('🔊 Fire alarm detected - audio available for manual trigger');
             alertSoundPlayed = true;
         }
 
@@ -206,6 +313,9 @@ function updateFireAlert(fireStatus) {
         }
 
     } else {
+        // Stop fire alarm audio when fire is cleared
+        stopFireAlarmAudio();
+
         fireAlertDiv.classList.remove('show');
         fireAlertDiv.classList.add('hide');
         alertSoundPlayed = false; // Reset for next alert
@@ -277,4 +387,12 @@ setTimeout(() => {
 document.addEventListener('DOMContentLoaded', () => {
   // Initial setup when DOM is ready
   console.log('O-Maps application loaded successfully');
+
+  // Make audio functions globally available for React components
+  window.toggleFireAlarmAudio = toggleFireAlarmAudio;
+  window.startFireAlarmAudio = startFireAlarmAudio;
+  window.stopFireAlarmAudio = stopFireAlarmAudio;
+  window.isFireAlarmAudioPlaying = () => isAudioPlaying;
+
+  console.log('🔊 Fire alarm audio functions made globally available');
 });

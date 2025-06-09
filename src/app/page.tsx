@@ -570,12 +570,99 @@ export default function Home() {
           transform: none;
         }
 
+        /* 📌 Fire Audio Button Styles */
+        .fire-audio-button-container {
+          display: flex !important;
+          justify-content: center;
+          align-items: center;
+          margin-top: 12px;
+          margin-bottom: 8px;
+          padding: 0 20px;
+          width: 100%;
+          box-sizing: border-box;
+          position: relative;
+          z-index: 1022;
+          visibility: visible !important;
+          opacity: 1 !important;
+          overflow: visible !important;
+          min-height: 50px;
+        }
+
+        .fire-audio-button {
+          background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+          color: white;
+          border: none;
+          border-radius: 10px;
+          padding: 10px 20px;
+          font-size: 14px;
+          font-weight: 600;
+          cursor: pointer;
+          display: flex !important;
+          align-items: center;
+          justify-content: center;
+          gap: 6px;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          box-shadow: 0 3px 12px rgba(40, 167, 69, 0.3);
+          text-transform: uppercase;
+          letter-spacing: 0.4px;
+          position: relative;
+          overflow: visible !important;
+          z-index: 1021;
+          -webkit-tap-highlight-color: transparent;
+          -webkit-touch-callout: none;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+          touch-action: manipulation;
+          min-height: 40px;
+          visibility: visible !important;
+          opacity: 1 !important;
+          max-width: 200px;
+        }
+
+        .fire-audio-button:hover {
+          background: linear-gradient(135deg, #20c997 0%, #17a2b8 100%);
+          transform: translateY(-1px);
+          box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+        }
+
+        /* Audio button disabled/muted state */
+        .fire-audio-button[data-state="muted"] {
+          background: linear-gradient(135deg, #6c757d 0%, #495057 100%) !important;
+          box-shadow: 0 3px 12px rgba(108, 117, 125, 0.3);
+        }
+
+        .fire-audio-button[data-state="muted"]:hover {
+          background: linear-gradient(135deg, #5a6268 0%, #3d4142 100%) !important;
+          box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
+        }
+
+        .fire-audio-button:active {
+          transform: scale(0.98);
+          transition: transform 0.1s ease;
+        }
+
+        .fire-audio-button i {
+          font-size: 16px;
+          animation: audioGlow 2s infinite;
+        }
+
+        @keyframes audioGlow {
+          0%, 100% {
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+          }
+          50% {
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+          }
+        }
+
         /* 📌 Fire Stop Button Styles */
         .fire-stop-button-container {
           display: flex !important; /* Force display */
           justify-content: center;
           align-items: center;
-          margin-top: 16px;
+          margin-top: 8px;
           margin-bottom: 8px;
           padding: 0 20px;
           width: 100%;
@@ -689,9 +776,37 @@ export default function Home() {
             font-size: 12px;
           }
 
+          /* Fire Audio Button - Mobile Responsiveness */
+          .fire-audio-button-container {
+            margin-top: 10px;
+            margin-bottom: 6px;
+            padding: 0 15px;
+            display: flex !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            overflow: visible !important;
+            min-height: 50px;
+          }
+
+          .fire-audio-button {
+            padding: 8px 16px;
+            font-size: 12px;
+            min-height: 36px;
+            width: 100%;
+            max-width: 180px;
+            border-radius: 8px;
+            display: flex !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+          }
+
+          .fire-audio-button i {
+            font-size: 14px;
+          }
+
           /* Fire Stop Button - Enhanced Mobile Responsiveness */
           .fire-stop-button-container {
-            margin-top: 15px;
+            margin-top: 8px;
             padding: 0 15px;
             display: flex !important;
             visibility: visible !important;
@@ -731,8 +846,31 @@ export default function Home() {
 
         /* 📌 Extra Small Mobile Devices (iPhone SE, etc.) */
         @media (max-width: 480px) {
+          .fire-audio-button-container {
+            margin-top: 8px;
+            margin-bottom: 4px;
+            padding: 0 10px;
+            min-height: 45px;
+          }
+
+          .fire-audio-button {
+            padding: 6px 14px;
+            font-size: 11px;
+            min-height: 32px;
+            max-width: 160px;
+            border-radius: 6px;
+          }
+
+          .fire-audio-button i {
+            font-size: 12px;
+          }
+
+          .fire-audio-button span {
+            font-size: 10px;
+          }
+
           .fire-stop-button-container {
-            margin-top: 12px;
+            margin-top: 8px;
             padding: 0 10px;
           }
 
@@ -825,6 +963,50 @@ export default function Home() {
                   <div className="status-dot"></div>
                   <span className="status-text">Initializing emergency protocol...</span>
                 </div>
+                {/* Audio Control Button */}
+                <div className="fire-audio-button-container">
+                  <button
+                    id="toggleAudioBtn"
+                    className="fire-audio-button"
+                    type="button"
+                    role="button"
+                    aria-label="Toggle fire alarm audio announcement"
+                    aria-describedby="fireAlert"
+                    tabIndex={0}
+                    onClick={() => {
+                      // Call the global audio toggle function from main.js
+                      if (typeof window !== 'undefined' && window.toggleFireAlarmAudio) {
+                        try {
+                          const isPlaying = window.toggleFireAlarmAudio();
+                          console.log('🔊 Audio toggle result:', isPlaying);
+
+                          // Haptic feedback
+                          if (navigator.vibrate) {
+                            navigator.vibrate(isPlaying ? [50, 50, 50] : [100]);
+                          }
+
+                          // The button state is updated by the updateAudioButtonState function in main.js
+                        } catch (error) {
+                          console.error('🔊 Error toggling audio:', error);
+                          alert('Error controlling audio. Please check if the audio file is available.');
+                        }
+                      } else {
+                        console.error('🔊 Audio functions not available');
+                        alert('Audio system not ready. Please refresh the page and try again.');
+                      }
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        e.currentTarget.click();
+                      }
+                    }}
+                  >
+                    <i className="fas fa-volume-up" aria-hidden="true"></i>
+                    <span>AUDIO ON</span>
+                  </button>
+                </div>
+
                 {/* Stop Fire Alarm Button */}
                 <div className="fire-stop-button-container">
                   <button
