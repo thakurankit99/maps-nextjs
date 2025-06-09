@@ -3,13 +3,6 @@
 import { useState } from 'react';
 import Link from 'next/link';
 
-// Type definitions for window extensions
-declare global {
-  interface Window {
-    checkFireAlarm?: () => void;
-  }
-}
-
 export default function TestFire() {
   const [response, setResponse] = useState<Record<string, unknown> | null>(null);
   const [loading, setLoading] = useState(false);
@@ -51,13 +44,6 @@ export default function TestFire() {
       });
       const data = await res.json();
       setResponse(data);
-
-      // Trigger immediate status check if available
-      if (typeof window !== 'undefined' && window.checkFireAlarm) {
-        setTimeout(() => {
-          window.checkFireAlarm?.();
-        }, 100);
-      }
     } catch {
       setResponse({ error: 'Failed to stop fire alarm' });
     } finally {

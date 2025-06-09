@@ -6,14 +6,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 // import { useHydration } from '../hooks/useHydration'; // Commented out as not used yet
 
-// Type definitions for window extensions
-declare global {
-  interface Window {
-    safeShowLoading?: () => void;
-    checkFireAlarm?: () => void;
-  }
-}
-
 export default function Home() {
   // const isHydrated = useHydration(); // Commented out as not used yet
 
@@ -580,10 +572,21 @@ export default function Home() {
 
         /* 📌 Fire Stop Button Styles */
         .fire-stop-button-container {
-          display: flex;
+          display: flex !important; /* Force display */
           justify-content: center;
-          margin-top: 20px;
+          align-items: center;
+          margin-top: 16px;
+          margin-bottom: 8px;
           padding: 0 20px;
+          width: 100%;
+          box-sizing: border-box;
+          position: relative;
+          z-index: 1022; /* Higher than other elements */
+          /* Ensure visibility */
+          visibility: visible !important;
+          opacity: 1 !important;
+          overflow: visible !important;
+          min-height: 60px; /* Ensure enough space */
         }
 
         .fire-stop-button {
@@ -595,16 +598,29 @@ export default function Home() {
           font-size: 16px;
           font-weight: 600;
           cursor: pointer;
-          display: flex;
+          display: flex !important; /* Force display */
           align-items: center;
+          justify-content: center;
           gap: 8px;
           transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
           box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
           text-transform: uppercase;
           letter-spacing: 0.5px;
           position: relative;
-          overflow: hidden;
-          z-index: 1020;
+          overflow: visible !important; /* Ensure content is visible */
+          z-index: 1021; /* Higher z-index */
+          /* Mobile-friendly touch enhancements */
+          -webkit-tap-highlight-color: transparent;
+          -webkit-touch-callout: none;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+          touch-action: manipulation;
+          min-height: 44px; /* iOS minimum touch target */
+          /* Ensure visibility */
+          visibility: visible !important;
+          opacity: 1 !important;
         }
 
         .fire-stop-button:hover {
@@ -618,24 +634,9 @@ export default function Home() {
           box-shadow: 0 2px 10px rgba(220, 53, 69, 0.3);
         }
 
-        .fire-stop-button.stopping {
-          background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
-          cursor: not-allowed;
-          opacity: 0.8;
-        }
-
-        .fire-stop-button.stopping:hover {
-          background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
-          transform: none;
-        }
-
         .fire-stop-button i {
           font-size: 18px;
           animation: pulse 2s infinite;
-        }
-
-        .fire-stop-button.stopping i {
-          animation: spin 1s linear infinite;
         }
 
         @keyframes pulse {
@@ -647,9 +648,14 @@ export default function Home() {
           }
         }
 
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
+        /* 📌 Debugging: Make button super visible */
+        #stopFireAlarmBtn {
+          background: #dc3545 !important;
+          border: 3px solid #fff !important;
+          color: white !important;
+          font-weight: bold !important;
+          text-shadow: 1px 1px 2px rgba(0,0,0,0.5) !important;
+          box-shadow: 0 0 20px rgba(220, 53, 69, 0.8) !important;
         }
 
         /* 📌 Mobile Responsive Styles */
@@ -683,14 +689,82 @@ export default function Home() {
             font-size: 12px;
           }
 
-          /* Fire Stop Button - Mobile */
+          /* Fire Stop Button - Enhanced Mobile Responsiveness */
+          .fire-stop-button-container {
+            margin-top: 15px;
+            padding: 0 15px;
+            display: flex !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            overflow: visible !important;
+            min-height: 70px; /* Ensure enough space on mobile */
+          }
+
           .fire-stop-button {
-            padding: 10px 20px;
+            padding: 14px 24px;
+            font-size: 15px;
+            font-weight: 700;
+            min-height: 48px; /* Minimum touch target size for mobile */
+            width: 100%;
+            max-width: 280px;
+            border-radius: 10px;
+            box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+            letter-spacing: 0.8px;
+            display: flex !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+          }
+
+          .fire-stop-button i {
+            font-size: 18px;
+          }
+
+          .fire-stop-button:hover {
+            transform: translateY(-1px); /* Reduced transform for mobile */
+          }
+
+          .fire-stop-button:active {
+            transform: scale(0.98); /* Better mobile feedback */
+            transition: transform 0.1s ease;
+          }
+        }
+
+        /* 📌 Extra Small Mobile Devices (iPhone SE, etc.) */
+        @media (max-width: 480px) {
+          .fire-stop-button-container {
+            margin-top: 12px;
+            padding: 0 10px;
+          }
+
+          .fire-stop-button {
+            padding: 12px 20px;
             font-size: 14px;
+            min-height: 44px;
+            width: 100%;
+            max-width: 240px;
+            border-radius: 8px;
+            letter-spacing: 0.6px;
           }
 
           .fire-stop-button i {
             font-size: 16px;
+          }
+
+          .fire-stop-button span {
+            font-size: 13px;
+          }
+        }
+
+        /* 📌 Large Mobile Devices and Small Tablets */
+        @media (min-width: 769px) and (max-width: 1024px) {
+          .fire-stop-button {
+            padding: 13px 26px;
+            font-size: 15px;
+            max-width: 300px;
+          }
+
+          .fire-stop-button i {
+            font-size: 17px;
           }
         }
       `}</style>
@@ -756,30 +830,15 @@ export default function Home() {
                   <button
                     id="stopFireAlarmBtn"
                     className="fire-stop-button"
-                    onClick={(e) => {
-                      const button = e.currentTarget;
-
-                      // Add visual feedback - button becomes disabled and shows spinner
-                      button.classList.add('stopping');
-                      button.disabled = true;
-                      const buttonText = button.querySelector('span');
-                      const originalText = buttonText?.textContent;
-                      if (buttonText) buttonText.textContent = 'STOPPING...';
-
-                      // Immediate UI feedback - hide the alert optimistically
-                      const fireAlert = document.getElementById('fireAlert');
-                      if (fireAlert) {
-                        fireAlert.classList.remove('show');
-                        fireAlert.classList.add('hide');
-                        setTimeout(() => {
-                          fireAlert.style.display = 'none';
-                        }, 300);
-                      }
-
-                      // Reset map to default immediately
-                      const mapIframe = document.getElementById('mapIframe') as HTMLIFrameElement;
-                      if (mapIframe) {
-                        mapIframe.src = 'https://app.mappedin.com/map/67af9483845fda000bf299c3';
+                    type="button"
+                    role="button"
+                    aria-label="Stop fire alarm emergency alert"
+                    aria-describedby="fireAlert"
+                    tabIndex={0}
+                    onClick={() => {
+                      // Add haptic feedback for mobile devices
+                      if (navigator.vibrate) {
+                        navigator.vibrate(100);
                       }
 
                       // Call the stop fire alarm API
@@ -793,37 +852,30 @@ export default function Home() {
                       .then(data => {
                         console.log('Fire alarm stopped:', data);
                         if (data.success) {
+                          // The fire status will be updated by the polling mechanism
                           console.log('Fire alarm successfully stopped');
-                          // Trigger immediate status check
-                          if (typeof window !== 'undefined' && window.checkFireAlarm) {
-                            window.checkFireAlarm();
-                          }
-                        } else {
-                          // If API failed, restore the alert
-                          if (fireAlert) {
-                            fireAlert.style.display = 'block';
-                            fireAlert.classList.remove('hide');
-                            fireAlert.classList.add('show');
+
+                          // Additional haptic feedback on success
+                          if (navigator.vibrate) {
+                            navigator.vibrate([50, 50, 50]);
                           }
                         }
                       })
                       .catch(error => {
                         console.error('Error stopping fire alarm:', error);
-                        // If API failed, restore the alert
-                        if (fireAlert) {
-                          fireAlert.style.display = 'block';
-                          fireAlert.classList.remove('hide');
-                          fireAlert.classList.add('show');
-                        }
-                      })
-                      .finally(() => {
-                        // Reset button state
-                        button.classList.remove('stopping');
-                        button.disabled = false;
-                        if (buttonText && originalText) {
-                          buttonText.textContent = originalText;
+
+                        // Error haptic feedback
+                        if (navigator.vibrate) {
+                          navigator.vibrate([200, 100, 200]);
                         }
                       });
+                    }}
+                    onKeyDown={(e) => {
+                      // Handle keyboard accessibility
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        e.currentTarget.click();
+                      }
                     }}
                   >
                     <i className="fas fa-stop" aria-hidden="true"></i>

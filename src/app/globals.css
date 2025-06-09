@@ -44,7 +44,7 @@ img {
   margin-bottom: 20px;
   background: linear-gradient(135deg, #ff4757 0%, #ff3838 100%);
   color: white;
-  padding: 16px 24px;
+  padding: 16px 24px 24px 24px; /* Extra bottom padding for button */
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(255, 71, 87, 0.4);
   border: 2px solid rgba(255, 255, 255, 0.2);
@@ -55,7 +55,8 @@ img {
   text-align: center;
   animation: fireAlertSlideDown 0.5s ease-out, fireAlertPulse 2s infinite;
   display: none;
-  overflow: hidden;
+  overflow: visible; /* Changed from hidden to visible */
+  min-height: auto; /* Allow natural height expansion */
 }
 
 #fireAlert.show {
@@ -71,10 +72,10 @@ img {
   0% {
     opacity: 1;
     transform: translateY(0);
-    max-height: 200px;
+    max-height: 400px; /* Increased from 200px to accommodate button */
     margin-bottom: 20px;
     padding-top: 16px;
-    padding-bottom: 16px;
+    padding-bottom: 24px; /* Increased bottom padding */
   }
   100% {
     opacity: 0;
@@ -107,10 +108,10 @@ img {
   100% {
     opacity: 1;
     transform: translateY(0);
-    max-height: 200px;
+    max-height: 400px; /* Increased from 200px to accommodate button */
     margin-bottom: 20px;
     padding-top: 16px;
-    padding-bottom: 16px;
+    padding-bottom: 24px; /* Increased bottom padding */
   }
 }
 
@@ -135,8 +136,62 @@ img {
   #fireAlert {
     margin-bottom: 15px;
     font-size: 14px;
-    padding: 12px 16px;
+    padding: 12px 16px 20px 16px; /* Extra bottom padding for mobile button */
     border-radius: 8px;
+    /* Enhanced mobile touch experience */
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    overflow: visible; /* Ensure button is visible on mobile */
+  }
+
+  #fireAlert .alert-content {
+    flex-direction: column;
+    gap: 6px;
+    text-align: center;
+  }
+
+  #fireAlert .alert-text {
+    font-size: 16px;
+    line-height: 1.3;
+  }
+
+  #fireAlert .alert-subtext {
+    font-size: 11px;
+    line-height: 1.4;
+    margin-top: 2px;
+  }
+
+  #fireAlert .status-indicator {
+    margin-top: 6px;
+    font-size: 10px;
+  }
+
+  #fireAlert .progress-container {
+    margin-top: 8px;
+    height: 3px;
+  }
+}
+
+/* Extra small mobile devices */
+@media (max-width: 480px) {
+  #fireAlert {
+    margin-bottom: 12px;
+    font-size: 13px;
+    padding: 10px 12px 18px 12px; /* Extra bottom padding for small mobile button */
+    border-radius: 6px;
+    overflow: visible; /* Ensure button is visible on small mobile */
+  }
+
+  #fireAlert .alert-text {
+    font-size: 15px;
+  }
+
+  #fireAlert .alert-subtext {
+    font-size: 10px;
+  }
+
+  #fireAlert .status-indicator {
+    font-size: 9px;
   }
 }
 
@@ -149,6 +204,9 @@ img {
   justify-content: center;
   flex-wrap: wrap;
   gap: 8px;
+  position: relative;
+  z-index: 1;
+  width: 100%;
 }
 
 #fireAlert .alert-text {

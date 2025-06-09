@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import Script from 'next/script';
 import "./globals.css";
-import "../styles/external.css";
 
 export const metadata: Metadata = {
   title: "O-Maps - Project by Team Vayu Sena",
@@ -39,9 +38,16 @@ export default function RootLayout({
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet" />
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet" />
 
+        {/* Libraries Stylesheet */}
+        <link href="/lib/animate/animate.min.css" rel="stylesheet" />
+        <link href="/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
 
+        {/* Customized Bootstrap Stylesheet */}
+        <link href="/css/bootstrap.min.css" rel="stylesheet" />
 
-
+        {/* OMAPS Stylesheet */}
+        <link href="/css/style.css" rel="stylesheet" />
+        <link href="/css/style1.css" rel="stylesheet" />
 
         {/* FontAwesome Kit */}
         <script src="https://kit.fontawesome.com/224fddad20.js" crossOrigin="anonymous" async></script>
@@ -85,26 +91,6 @@ export default function RootLayout({
         )}
 
         {children}
-
-        {/* Load CSS files dynamically */}
-        <Script id="load-css" strategy="beforeInteractive">
-          {`
-            // Function to load CSS dynamically
-            function loadCSS(href) {
-              const link = document.createElement('link');
-              link.rel = 'stylesheet';
-              link.href = href;
-              document.head.appendChild(link);
-            }
-
-            // Load all required CSS files
-            loadCSS('/lib/animate/animate.min.css');
-            loadCSS('/lib/owlcarousel/assets/owl.carousel.min.css');
-            loadCSS('/css/bootstrap.min.css');
-            loadCSS('/css/style.css');
-            loadCSS('/css/style1.css');
-          `}
-        </Script>
       </body>
     </html>
   );

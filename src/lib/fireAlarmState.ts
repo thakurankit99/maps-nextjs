@@ -38,13 +38,13 @@ export function getFireAlarmState(): FireAlarmState {
 
     if (elapsed >= 30000) {
       // After 30 seconds (20s exit1 + 10s exit2), stay on exit2 until manually stopped
-      if (state.sequence !== 'exit2' && globalThis.fireAlarmState) {
+      if (state.sequence !== 'exit2') {
         globalThis.fireAlarmState.sequence = 'exit2';
         console.log('Fire alarm sequence updated to exit2 - staying until manual stop');
       }
     } else if (elapsed >= 20000) {
       // After 20 seconds, switch to exit2 for 10 seconds
-      if (state.sequence !== 'exit2' && globalThis.fireAlarmState) {
+      if (state.sequence !== 'exit2') {
         globalThis.fireAlarmState.sequence = 'exit2';
         console.log('Fire alarm sequence auto-updated to exit2');
       }
@@ -52,7 +52,7 @@ export function getFireAlarmState(): FireAlarmState {
     // First 20 seconds remain as exit1
   }
 
-  return { ...globalThis.fireAlarmState! };
+  return { ...globalThis.fireAlarmState };
 }
 
 export function setFireAlarmState(newState: Partial<FireAlarmState>): FireAlarmState {
