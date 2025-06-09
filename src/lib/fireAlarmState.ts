@@ -30,7 +30,17 @@ export const mapUrls = {
 };
 
 export function getFireAlarmState(): FireAlarmState {
-  const state = globalThis.fireAlarmState!;
+  // Initialize if not exists
+  if (!globalThis.fireAlarmState) {
+    globalThis.fireAlarmState = {
+      isActive: false,
+      triggeredAt: null,
+      sequence: 'normal',
+      manualStop: false
+    };
+  }
+
+  const state = globalThis.fireAlarmState;
 
   // If fire alarm is active and not manually stopped, calculate current sequence based on elapsed time
   if (state.isActive && state.triggeredAt && !state.manualStop) {
@@ -38,13 +48,13 @@ export function getFireAlarmState(): FireAlarmState {
 
     if (elapsed >= 30000) {
       // After 30 seconds (20s exit1 + 10s exit2), stay on exit2 until manually stopped
-      if (state.sequence !== 'exit2') {
+      if (state.sequence !== 'exit2' && globalThis.fireAlarmState) {
         globalThis.fireAlarmState.sequence = 'exit2';
         console.log('Fire alarm sequence updated to exit2 - staying until manual stop');
       }
     } else if (elapsed >= 20000) {
       // After 20 seconds, switch to exit2 for 10 seconds
-      if (state.sequence !== 'exit2') {
+      if (state.sequence !== 'exit2' && globalThis.fireAlarmState) {
         globalThis.fireAlarmState.sequence = 'exit2';
         console.log('Fire alarm sequence auto-updated to exit2');
       }
@@ -56,7 +66,17 @@ export function getFireAlarmState(): FireAlarmState {
 }
 
 export function setFireAlarmState(newState: Partial<FireAlarmState>): FireAlarmState {
-  globalThis.fireAlarmState = { ...globalThis.fireAlarmState!, ...newState };
+  // Initialize if not exists
+  if (!globalThis.fireAlarmState) {
+    globalThis.fireAlarmState = {
+      isActive: false,
+      triggeredAt: null,
+      sequence: 'normal',
+      manualStop: false
+    };
+  }
+
+  globalThis.fireAlarmState = { ...globalThis.fireAlarmState, ...newState };
   return { ...globalThis.fireAlarmState };
 }
 
@@ -74,7 +94,7 @@ export function triggerFireAlarm(): FireAlarmState {
   // Note: In serverless environments, we rely on client-side timing
   // The client will handle the sequence progression via polling
 
-  return { ...globalThis.fireAlarmState };
+  return { ...globalThis.fireAlarmState! };
 }
 
 export function stopFireAlarm(): FireAlarmState {
@@ -87,7 +107,7 @@ export function stopFireAlarm(): FireAlarmState {
   };
 
   console.log('Fire alarm manually stopped:', globalThis.fireAlarmState);
-  return { ...globalThis.fireAlarmState };
+  return { ...globalThis.fireAlarmState! };
 }
 
 export function resetFireAlarm(): FireAlarmState {
@@ -97,5 +117,5 @@ export function resetFireAlarm(): FireAlarmState {
     sequence: 'normal',
     manualStop: false
   };
-  return { ...globalThis.fireAlarmState };
+  return { ...globalThis.fireAlarmState! };
 }
