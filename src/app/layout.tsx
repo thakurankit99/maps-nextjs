@@ -53,27 +53,43 @@ export default function RootLayout({
         <script src="https://kit.fontawesome.com/224fddad20.js" crossOrigin="anonymous" async></script>
       </head>
       <body>
-        {/* Disable DevTools */}
-        <Script
-          src="https://cdn.jsdelivr.net/npm/disable-devtool"
-          strategy="beforeInteractive"
-        />
-        <Script id="disable-devtool-init" strategy="afterInteractive">
-          {`
-            if (typeof DisableDevtool !== 'undefined') {
-              DisableDevtool({
-                url: window.location.origin,
-                disableMenu: true,
-                disableSelect: false,
-                disableCopy: false,
-                disableCut: false,
-                disablePaste: false,
-                clearLog: true,
-                interval: 200
-              });
-            }
-          `}
-        </Script>
+        {/* Disable DevTools - Only in Production */}
+        {process.env.NODE_ENV === 'production' && (
+          <>
+            <Script
+              src="https://cdn.jsdelivr.net/npm/disable-devtool"
+              strategy="beforeInteractive"
+            />
+            <Script id="disable-devtool-init" strategy="afterInteractive">
+              {`
+                if (typeof DisableDevtool !== 'undefined') {
+                  DisableDevtool({
+                    url: window.location.origin,
+                    disableMenu: true,
+                    disableSelect: false,
+                    disableCopy: false,
+                    disableCut: false,
+                    disablePaste: false,
+                    clearLog: true,
+                    interval: 200
+                  });
+                  console.log('🔒 DevTools protection enabled in production');
+                }
+              `}
+            </Script>
+          </>
+        )}
+
+        {/* Development Mode Indicator */}
+        {process.env.NODE_ENV === 'development' && (
+          <Script id="dev-mode-indicator" strategy="afterInteractive">
+            {`
+              console.log('🛠️ Development mode: DevTools protection disabled');
+              console.log('🚀 DevTools protection will be enabled in production deployment');
+            `}
+          </Script>
+        )}
+
         {children}
       </body>
     </html>

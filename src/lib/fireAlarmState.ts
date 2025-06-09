@@ -28,7 +28,32 @@ export const mapUrls = {
 };
 
 export function getFireAlarmState(): FireAlarmState {
-  return { ...globalThis.fireAlarmState! };
+  const state = globalThis.fireAlarmState!;
+
+  // If fire alarm is active, calculate current sequence based on elapsed time
+  if (state.isActive && state.triggeredAt) {
+    const elapsed = Date.now() - new Date(state.triggeredAt).getTime();
+
+    if (elapsed >= 20000) {
+      // After 20 seconds, reset to normal
+      globalThis.fireAlarmState = {
+        isActive: false,
+        triggeredAt: null,
+        sequence: 'normal'
+      };
+      console.log('Fire alarm auto-reset to normal after 20 seconds');
+      return { ...globalThis.fireAlarmState };
+    } else if (elapsed >= 10000) {
+      // After 10 seconds, switch to exit2
+      if (state.sequence !== 'exit2') {
+        globalThis.fireAlarmState.sequence = 'exit2';
+        console.log('Fire alarm sequence auto-updated to exit2');
+      }
+    }
+    // First 10 seconds remain as exit1
+  }
+
+  return { ...globalThis.fireAlarmState };
 }
 
 export function setFireAlarmState(newState: Partial<FireAlarmState>): FireAlarmState {
@@ -46,23 +71,8 @@ export function triggerFireAlarm(): FireAlarmState {
 
   console.log('Fire alarm triggered:', globalThis.fireAlarmState);
 
-  // After 10 seconds, switch to exit path 2
-  setTimeout(() => {
-    if (globalThis.fireAlarmState?.isActive) {
-      globalThis.fireAlarmState.sequence = 'exit2';
-      console.log('Fire alarm sequence updated to exit2:', globalThis.fireAlarmState);
-    }
-  }, 10000);
-
-  // After 20 seconds total, return to normal
-  setTimeout(() => {
-    globalThis.fireAlarmState = {
-      isActive: false,
-      triggeredAt: null,
-      sequence: 'normal'
-    };
-    console.log('Fire alarm reset to normal:', globalThis.fireAlarmState);
-  }, 20000);
+  // Note: In serverless environments, we rely on client-side timing
+  // The client will handle the sequence progression via polling
 
   return { ...globalThis.fireAlarmState };
 }

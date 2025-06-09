@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test-production": "npm run build && npm run start"
   },
   "dependencies": {
     "@tensorflow-models/coco-ssd": "^2.2.3",
